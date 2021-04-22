@@ -13,15 +13,18 @@ runs:
     - name: Terraform Format
       id: fmt
       run: terraform fmt -check
+      shell: bash
       continue-on-error: true
 
     - name: Terraform Init
       id: init
       run: terraform init
+      shell: bash
 
     - name: Terraform Plan
       id: plan
       run: terraform plan -no-color
+      shell: bash
       continue-on-error: true
 
     - name: Create/Update Comment
@@ -72,3 +75,4 @@ runs:
     - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
       run: exit 1
+      shell: bash
