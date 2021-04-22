@@ -3,6 +3,10 @@ description: 'Provides a feedback loop for PRs'
 branding:
   icon: 'package'
   color: 'blue'
+inputs:
+  github-token:
+    description: "secrets.GITHUB_TOKEN"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -25,7 +29,7 @@ runs:
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ inputs.github-token }}
         script: |
           const output = `
           ### Terraform Status
