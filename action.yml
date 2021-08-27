@@ -1,5 +1,5 @@
-name: 'GitHub Action for adding Terraform output to PR comments'
-description: 'Provides a feedback loop for PRs'
+name: 'Terraform PR'
+description: 'GitHub Action for adding `terraform plan` output as a PR comment'
 branding:
   icon: 'package'
   color: 'blue'
