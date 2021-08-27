@@ -12,23 +12,26 @@ runs:
   steps:
     - name: Terraform Format
       id: fmt
-      run: terraform fmt -check
       shell: bash
       continue-on-error: true
+      run: |
+        terraform fmt -check
 
     - name: Terraform Init
       id: init
-      run: terraform init
       shell: bash
+      run: |
+        terraform init
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color
       shell: bash
       continue-on-error: true
+      run: |
+        terraform plan -no-color
 
     - name: Create/Update Comment
-      uses: actions/github-script@0.9.0
+      uses: actions/github-script@v4
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
@@ -61,18 +64,20 @@ runs:
                 comment_id: githubActionsBotComment.id,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: output
+                body: output,
               })
             } else {
               await github.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: output
+                body: output,
               })
             }
           }
+
     - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
-      run: exit 1
       shell: bash
+      run: |
+        exit 1
