@@ -11,6 +11,10 @@ inputs:
     description: "Default branch of the repository. Defaults to 'main' if not specified."
     required: false
     default: "main"
+  path:
+    description: "Path to the Terraform configuration. Defaults to '.' if not specified."
+    required: false
+    default: "."
 runs:
   using: "composite"
   steps:
@@ -19,6 +23,7 @@ runs:
       shell: bash
       continue-on-error: true
       run: |
+        cd ${{ inputs.path }}
         terraform fmt -check
 
     - name: Terraform Init
@@ -26,12 +31,14 @@ runs:
       shell: bash
       timeout-minutes: 2
       run: |
+        cd ${{ inputs.path }}
         terraform init
 
     - name: Terraform Workspace
       id: workspace
       shell: bash
       run: |
+        cd ${{ inputs.path }}
         terraform workspace show
 
     - name: Terraform Plan
@@ -40,6 +47,7 @@ runs:
       continue-on-error: true
       if: github.ref != 'refs/heads/${{ inputs.default-branch }}'
       run: |
+        cd ${{ inputs.path }}
         terraform plan -no-color
 
     - name: Create/Update Comment
