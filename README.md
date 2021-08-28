@@ -11,6 +11,7 @@ This action can be used as follows:
       - uses: tchupp/terraform-pr@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          apply-branch: "main"
 ```
 
 ### Assumptions
@@ -72,10 +73,10 @@ This naming scheme is common when using a backend such as Terraform Cloud.
 
 **Required**. This can just be set to `${{ secrets.GITHUB_TOKEN }}`
 
-#### default-branch
+#### apply-branch
 
 **Optional**. Set this to the default branch for your repo, ex `main` or `master`.  
-This will default to `main` if not specified.
+Leave blank to disable auto-apply.
 
 #### path
 
@@ -128,15 +129,15 @@ jobs:
       - uses: tchupp/terraform-pr@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          default-branch: "main"
+          apply-branch: "main"
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule')
+        if: github.ref == 'refs/heads/main'
         run: |
           terraform apply -auto-approve
 ```
 
-### Simple Setup - single directory with a single workspace
+### Single directory with a single workspace
 
 This setup assumes you have your terraform files in a subdirectory in your repo, and you only have a single workspace:
 ```bash
@@ -183,17 +184,11 @@ jobs:
       - uses: tchupp/terraform-pr@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          default-branch: "main"
+          apply-branch: "main"
           path: "terraform"
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule')
-        run: |
-          cd terraform
-          terraform apply -auto-approve
 ```
 
-### Simple Setup - single directory with multiple workspaces
+### Single directory with multiple workspaces
 
 This setup assumes you have your terraform files in a subdirectory in your repo, and you only have a single workspace:
 ```bash
@@ -246,12 +241,49 @@ jobs:
       - uses: tchupp/terraform-pr@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          default-branch: "main"
+          apply-branch: "main"
           path: "terraform"
+```
+
+### Manual Terraform Apply
+
+In some situation, you want to control the `terraform apply` yourself.
+
+In your `.github/workflows/terraform.yml` file you would have:
+```yaml
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.tf'
+      - '.github/workflows/terraform.yml'
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      TF_WORKSPACE: "default"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ~1.0.0
+          cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
+
+      - uses: tchupp/terraform-pr@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule')
+        if: github.ref == 'refs/heads/main'
         run: |
-          cd terraform
           terraform apply -auto-approve
 ```

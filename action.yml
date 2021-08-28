@@ -7,10 +7,10 @@ inputs:
   github-token:
     description: "secrets.GITHUB_TOKEN"
     required: true
-  default-branch:
-    description: "Default branch of the repository. Defaults to 'main' if not specified."
+  apply-branch:
+    description: "Branch to run `terraform apply` on. Leave blank to disable auto-apply."
     required: false
-    default: "main"
+    default: ""
   path:
     description: "Path to the Terraform configuration. Defaults to '.' if not specified."
     required: false
@@ -45,7 +45,7 @@ runs:
       id: plan
       shell: bash
       continue-on-error: true
-      if: github.ref != 'refs/heads/${{ inputs.default-branch }}'
+      if: github.ref != 'refs/heads/${{ inputs.apply-branch }}'
       run: |
         cd ${{ inputs.path }}
         terraform plan -no-color
@@ -69,6 +69,7 @@ runs:
           </details>
           *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
           `;
+
           if (!context || !context.issue || !context.issue.number) {
             return;
           }
@@ -114,3 +115,9 @@ runs:
         echo "${{ steps.plan.outputs.stdout }}"
         echo "${{ steps.plan.outputs.stderr }}"
         exit 1
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/${{ inputs.apply-branch }}'
+      run: |
+        cd ${{ inputs.path }}
+        terraform apply -auto-approve
