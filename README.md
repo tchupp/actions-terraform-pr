@@ -130,11 +130,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           apply-branch: "main"
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: |
-          terraform apply -auto-approve
 ```
 
 ### Single directory with a single workspace

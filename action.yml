@@ -45,10 +45,11 @@ runs:
       id: plan
       shell: bash
       continue-on-error: true
-      if: github.ref != 'refs/heads/${{ inputs.apply-branch }}'
       run: |
-        cd ${{ inputs.path }}
-        terraform plan -no-color
+        if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
+          cd ${{ inputs.path }}
+          terraform plan -no-color
+        fi
 
     - name: Create/Update Comment
       uses: actions/github-script@v4
@@ -109,15 +110,18 @@ runs:
           }
 
     - name: Terraform Plan Status
-      if: steps.plan.outcome == 'failure'
       shell: bash
       run: |
-        echo "${{ steps.plan.outputs.stdout }}"
-        echo "${{ steps.plan.outputs.stderr }}"
-        exit 1
+        if [[ '${{ steps.plan.outcome }}' == 'failure' ]]; then
+          echo "${{ steps.plan.outputs.stdout }}"
+          echo "${{ steps.plan.outputs.stderr }}"
+          exit 1
+        fi
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/${{ inputs.apply-branch }}'
+      shell: bash
       run: |
-        cd ${{ inputs.path }}
-        terraform apply -auto-approve
+        if [[ '${{ github.ref }}' == 'refs/heads/${{ inputs.apply-branch }}' ]]; then
+          cd ${{ inputs.path }}
+          terraform apply -auto-approve
+        fi
