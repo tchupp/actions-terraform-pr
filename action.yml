@@ -34,14 +34,22 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        terraform init
+        if terraform init; then
+          echo "::set-output name=init-outcome::success"
+        else
+          echo "::set-output name=init-outcome::failure"
+        fi
 
     - name: Terraform Workspace
       id: workspace
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        terraform workspace show
+        if terraform workspace show; then
+          echo "::set-output name=workspace-outcome::success"
+        else
+          echo "::set-output name=workspace-outcome::failure"
+        fi
 
     - name: Terraform Plan
       id: plan
