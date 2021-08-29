@@ -60,10 +60,11 @@ runs:
       uses: actions/github-script@v4
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}\n${{ steps.plan.outputs.stderr }}"
+        TF_WORKSPACE: "${{ steps.workspace.outputs.stdout }}"
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          const tag = ${{ steps.workspace.outputs.stdout }}
+          const tag = process.env.TF_WORKSPACE;
           const output = `
           ### Terraform Status ${tag}
           #### Terraform Format and Style 🖌 \`${{ steps.fmt.outputs.fmt-outcome }}\`
@@ -78,6 +79,7 @@ runs:
           if (!context || !context.issue || !context.issue.number) {
             return;
           }
+
           const comments = await github.issues.listComments({
             issue_number: context.issue.number,
             owner: context.repo.owner,
@@ -87,6 +89,7 @@ runs:
             comment.user.login === 'github-actions[bot]' &&
              comment.body.includes(`### Terraform Status ${tag}`)
           );
+
           if (output.includes("No changes.")) {
             if (githubActionsBotComment) {
               await github.issues.deleteComment({
