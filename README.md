@@ -23,6 +23,7 @@ Please read below to make sure your setup aligns with the assumptions made by th
 
 This action expects that the repo has been checked out and terraform has been set up with the correct version.  
 The following snippet from an example job, [which can be found below](#simple-setup).
+
 ```yaml
 ...
     steps:
