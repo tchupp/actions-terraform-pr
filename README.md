@@ -8,7 +8,7 @@ GitHub Action for adding `terraform plan` output as a PR comment.
 
 This action can be used as follows:
 ```yaml
-      - uses: tchupp/terraform-pr@v1
+      - uses: tchupp/actions-terraform-pr@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           apply-branch: "main"
@@ -127,7 +127,7 @@ jobs:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
 
-      - uses: tchupp/terraform-pr@v1
+      - uses: tchupp/actions-terraform-pr@v1
         with:
           apply-branch: "main"
 ```
@@ -176,7 +176,7 @@ jobs:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
 
-      - uses: tchupp/terraform-pr@v1
+      - uses: tchupp/actions-terraform-pr@v1
         with:
           apply-branch: "main"
           path: "terraform"
@@ -232,7 +232,7 @@ jobs:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
 
-      - uses: tchupp/terraform-pr@v1
+      - uses: tchupp/actions-terraform-pr@v1
         with:
           apply-branch: "main"
           path: "terraform"
@@ -271,7 +271,7 @@ jobs:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
 
-      - uses: tchupp/terraform-pr@v1
+      - uses: tchupp/actions-terraform-pr@v1
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
