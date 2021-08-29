@@ -71,7 +71,8 @@ This naming scheme is common when using a backend such as Terraform Cloud.
 
 #### github-token
 
-**Required**. This can just be set to `${{ secrets.GITHUB_TOKEN }}`
+**Optional**. Uses to comment on PRs.  
+This will default to `${{ secrets.GITHUB_TOKEN }}` if omitted.
 
 #### apply-branch
 
@@ -128,7 +129,6 @@ jobs:
 
       - uses: tchupp/terraform-pr@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           apply-branch: "main"
 ```
 
@@ -178,7 +178,6 @@ jobs:
 
       - uses: tchupp/terraform-pr@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           apply-branch: "main"
           path: "terraform"
 ```
@@ -235,7 +234,6 @@ jobs:
 
       - uses: tchupp/terraform-pr@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           apply-branch: "main"
           path: "terraform"
 ```
@@ -274,8 +272,6 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
 
       - uses: tchupp/terraform-pr@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'

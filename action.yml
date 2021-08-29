@@ -5,8 +5,9 @@ branding:
   color: 'blue'
 inputs:
   github-token:
-    description: "secrets.GITHUB_TOKEN"
-    required: true
+    description: "GitHub token for commenting on PRs. Defaults to using 'secrets.GITHUB_TOKEN'"
+    required: false
+    default: ${{ github.token }}
   apply-branch:
     description: "Branch to run `terraform apply` on. Leave blank to disable auto-apply."
     required: false
@@ -128,8 +129,6 @@ runs:
       shell: bash
       run: |
         if [[ '${{ steps.plan.outputs.plan-outcome }}' == 'failure' ]]; then
-          echo "${{ steps.plan.outputs.stdout }}"
-          echo "${{ steps.plan.outputs.stderr }}"
           exit 1
         fi
 
