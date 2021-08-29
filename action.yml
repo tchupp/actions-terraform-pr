@@ -68,7 +68,7 @@ runs:
     - name: Create/Update Comment
       uses: actions/github-script@v4
       env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}\n${{ steps.plan.outputs.stderr }}"
+        PLAN: "terraform\n\n${{ steps.plan.outputs.stdout }}\n${{ steps.plan.outputs.stderr }}"
         TF_WORKSPACE: "${{ steps.workspace.outputs.stdout }}"
       with:
         github-token: ${{ inputs.github-token }}
@@ -80,9 +80,13 @@ runs:
           #### Terraform Plan 📖 \`${{ steps.plan.outputs.plan-outcome }}\`
           <details>
           <summary>Show Plan</summary>
+
           \`\`\`${process.env.PLAN}\`\`\`
+
           </details>
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
+
+          Pusher: @${{ github.actor }}
+          Action: \`${{ github.event_name }}\`
           `;
 
           if (!context || !context.issue || !context.issue.number) {
