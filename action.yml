@@ -21,15 +21,17 @@ runs:
     - name: Terraform Format
       id: fmt
       shell: bash
-      continue-on-error: true
       run: |
         cd ${{ inputs.path }}
-        terraform fmt -check
+        if terraform fmt -check; then
+          echo "::set-output name=fmt-outcome::success"
+        else
+          echo "::set-output name=fmt-outcome::failure"
+        fi
 
     - name: Terraform Init
       id: init
       shell: bash
-      timeout-minutes: 2
       run: |
         cd ${{ inputs.path }}
         terraform init
@@ -44,11 +46,14 @@ runs:
     - name: Terraform Plan
       id: plan
       shell: bash
-      continue-on-error: true
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
-          terraform plan -no-color
+          if terraform plan -no-color; then
+            echo "::set-output name=plan-outcome::success"
+          else
+            echo "::set-output name=plan-outcome::failure"
+          fi
         fi
 
     - name: Create/Update Comment
@@ -61,9 +66,8 @@ runs:
           const tag = ${{ steps.workspace.outputs.stdout }}
           const output = `
           ### Terraform Status ${tag}
-          #### Terraform Format and Style 🖌 \`${{ steps.fmt.outcome }}\`
-          #### Terraform Initialization ⚙️ \`${{ steps.init.outcome }}\`
-          #### Terraform Plan 📖 \`${{ steps.plan.outcome }}\`
+          #### Terraform Format and Style 🖌 \`${{ steps.fmt.outputs.fmt-outcome }}\`
+          #### Terraform Plan 📖 \`${{ steps.plan.outputs.plan-outcome }}\`
           <details>
           <summary>Show Plan</summary>
           \`\`\`${process.env.PLAN}\`\`\`
@@ -112,7 +116,7 @@ runs:
     - name: Terraform Plan Status
       shell: bash
       run: |
-        if [[ '${{ steps.plan.outcome }}' == 'failure' ]]; then
+        if [[ '${{ steps.plan.outputs.plan-outcome }}' == 'failure' ]]; then
           echo "${{ steps.plan.outputs.stdout }}"
           echo "${{ steps.plan.outputs.stderr }}"
           exit 1
