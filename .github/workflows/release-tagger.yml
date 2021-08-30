@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+  release:
+    types:
+      - published
+      - edited
 
 jobs:
   update-previous-tags:
@@ -15,7 +19,8 @@ jobs:
       - name: Update Previous Tags
         shell: bash
         run: |
-          git_ref="${{ github.ref }}"
+          release_sha="${GITHUB_SHA}"
+          git_ref="${GITHUB_REF}"
           git_ref_type=$(echo "${git_ref}" | cut -d '/' -f 2)
 
           if [[ "${git_ref_type}" != "tags" ]]; then
@@ -35,7 +40,7 @@ jobs:
           minor=$(echo "${git_ref}" | sed -E 's/v([0-9]*)\.([0-9]*)\.([0-9]*)/\2/')
           patch=$(echo "${git_ref}" | sed -E 's/v([0-9]*)\.([0-9]*)\.([0-9]*)/\3/')
 
-          git tag -f "v${major}"
-          git tag -f "v${major}.${minor}"
+          git tag -f "v${major}" "${release_sha}"
+          git tag -f "v${major}.${minor}" "${release_sha}"
 
           git push --tags -f
