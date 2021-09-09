@@ -74,8 +74,9 @@ runs:
         github-token: ${{ inputs.github-token }}
         script: |
           const tag = process.env.TF_WORKSPACE;
-          const output = `
-          ### Terraform Status ${tag}
+          const commentTitle = `### Terraform Status ${tag}`;
+          const commentContent = `
+          ${commentTitle}
           #### Terraform Format and Style 🖌 \`${{ steps.fmt.outputs.fmt-outcome }}\`
           #### Terraform Plan 📖 \`${{ steps.plan.outputs.plan-outcome }}\`
           <details>
@@ -100,10 +101,10 @@ runs:
           });
           const githubActionsBotComment = comments.data.find(comment =>
             comment.user.login === 'github-actions[bot]' &&
-             comment.body.includes(`### Terraform Status ${tag}`)
+             comment.body.includes(commentTitle)
           );
 
-          if (output.includes("No changes.")) {
+          if (commentContent.includes("No changes.")) {
             if (githubActionsBotComment) {
               await github.issues.deleteComment({
                 comment_id: githubActionsBotComment.id,
@@ -117,14 +118,14 @@ runs:
                 comment_id: githubActionsBotComment.id,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: output,
+                body: commentContent,
               })
             } else {
               await github.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: output,
+                body: commentContent,
               })
             }
           }
