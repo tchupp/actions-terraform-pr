@@ -52,6 +52,17 @@ runs:
           echo "::set-output name=workspace-outcome::failure"
         fi
 
+    - name: Terraform Validate
+      id: validate
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        if terraform validate -no-color; then
+          echo "::set-output name=validate-outcome::success"
+        else
+          echo "::set-output name=validate-outcome::failure"
+        fi
+
     - name: Terraform Plan
       id: plan
       shell: bash
@@ -78,6 +89,7 @@ runs:
           const commentContent = `
           ${commentTitle}
           #### Terraform Format and Style 🖌 \`${{ steps.fmt.outputs.fmt-outcome }}\`
+          #### Terraform Validate 📖 \`${{ steps.plan.outputs.validate-outcome }}\`
           #### Terraform Plan 📖 \`${{ steps.plan.outputs.plan-outcome }}\`
           <details>
           <summary>Show Plan</summary>
