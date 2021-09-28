@@ -89,7 +89,7 @@ runs:
           const commentContent = `
           ${commentTitle}
           #### Terraform Format and Style 🖌 \`${{ steps.fmt.outputs.fmt-outcome }}\`
-          #### Terraform Validate 📖 \`${{ steps.plan.outputs.validate-outcome }}\`
+          #### Terraform Validate 📖 \`${{ steps.validate.outputs.validate-outcome }}\`
           #### Terraform Plan 📖 \`${{ steps.plan.outputs.plan-outcome }}\`
           <details>
           <summary>Show Plan</summary>
