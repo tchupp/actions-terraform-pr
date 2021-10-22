@@ -85,6 +85,11 @@ Leave blank to disable auto-apply.
 **Optional**. Set this to the path to your terraform configuration files.  
 This will default to the top level directory if not specified.
 
+#### pr-comment-title
+
+**Optional**. Set this to specify a custom PR title.  
+This will default to '${TF_WORKSPACE}' if not specified.
+
 ## Examples
 
 ### Simple Setup
