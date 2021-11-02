@@ -16,6 +16,10 @@ inputs:
     description: "Path to the Terraform configuration. Defaults to '.' if not specified."
     required: false
     default: "."
+  pr-comment-title:
+    description: "Custom title for the PR comment. Defaults to '${TF_WORKSPACE}' if not specified."
+    required: false
+    default: ""
 runs:
   using: "composite"
   steps:
@@ -81,10 +85,17 @@ runs:
       env:
         PLAN: "terraform\n\n${{ steps.plan.outputs.stdout }}\n${{ steps.plan.outputs.stderr }}"
         TF_WORKSPACE: "${{ steps.workspace.outputs.stdout }}"
+        CUSTOM_TITLE: "${{ inputs.pr-comment-title }}"
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          const tag = process.env.TF_WORKSPACE;
+          const tag = [
+            process.env.CUSTOM_TITLE,
+            process.env.TF_WORKSPACE,
+          ]
+            .filter(s => !!s)
+            .join(" ");
+
           const commentTitle = `### Terraform Status ${tag}`;
           const commentContent = `
           ${commentTitle}
