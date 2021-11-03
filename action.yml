@@ -28,7 +28,7 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        if terraform fmt -check; then
+        if terraform fmt -recursive -check; then
           echo "::set-output name=fmt-outcome::success"
         else
           echo "::set-output name=fmt-outcome::failure"
