@@ -163,7 +163,20 @@ runs:
     - name: Terraform Apply
       shell: bash
       run: |
-        if [[ '${{ github.ref }}' == 'refs/heads/${{ inputs.apply-branch }}' ]]; then
-          cd ${{ inputs.path }}
-          terraform apply -auto-approve
+        if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]
+        then
+          echo "Branch is not '${{ inputs.apply-branch }}', 'terraform apply' will not be executed."
+          exit 0
+        else
+          # Update remote references
+          git fetch
+
+          if [[ "$(git rev-parse origin/HEAD)" != "$(git rev-parse HEAD)" ]]
+          then
+            echo "Branch is not up to date, 'terraform apply' will not be executed."
+            exit 0
+          else
+            cd ${{ inputs.path }}
+            terraform apply -auto-approve
+          fi
         fi
