@@ -167,16 +167,16 @@ runs:
         then
           echo "Branch is not '${{ inputs.apply-branch }}', 'terraform apply' will not be executed."
           exit 0
-        else
-          # Update remote references
-          git fetch
-
-          if [[ "$(git rev-parse origin/HEAD)" != "$(git rev-parse HEAD)" ]]
-          then
-            echo "Branch is not up to date, 'terraform apply' will not be executed."
-            exit 0
-          else
-            cd ${{ inputs.path }}
-            terraform apply -auto-approve
-          fi
         fi
+
+        # Update remote references
+        git fetch
+
+        if [[ "$(git rev-parse origin/HEAD)" != "$(git rev-parse HEAD)" ]]
+        then
+          echo "Branch is not up to date, 'terraform apply' will not be executed."
+          exit 1
+        fi
+
+        cd ${{ inputs.path }}
+        terraform apply -auto-approve
