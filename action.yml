@@ -172,7 +172,7 @@ runs:
         # Update remote references
         git fetch
 
-        if [[ "$(git rev-parse origin/HEAD)" != "$(git rev-parse HEAD)" ]]
+        if [[ "$(git rev-parse origin/${{ github.ref_name }})" != "$(git rev-parse HEAD)" ]]
         then
           echo "Branch is not up to date, 'terraform apply' will not be executed."
           exit 1
