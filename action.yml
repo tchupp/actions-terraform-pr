@@ -165,16 +165,27 @@ runs:
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]
         then
+          echo
+          echo
+          echo "********"
           echo "Branch is not '${{ inputs.apply-branch }}', 'terraform apply' will not be executed."
+          echo "********"
+          echo
           exit 0
         fi
 
         # Update remote references
-        git fetch
+        git fetch --quiet
 
         if [[ "$(git rev-parse origin/${{ github.ref_name }})" != "$(git rev-parse HEAD)" ]]
         then
-          echo "Branch is not up to date, 'terraform apply' will not be executed."
+          echo
+          echo
+          echo "********"
+          echo "Branch '${{ inputs.apply-branch }}' is not up to date, 'terraform apply' will not be executed."
+          echo "Please run only run this action on the latest commit on the '${{ inputs.apply-branch }}' branch."
+          echo "********"
+          echo
           exit 1
         fi
 
