@@ -285,7 +285,7 @@ jobs:
           terraform apply -auto-approve
 ```
 
-### Manual Terraform Apply
+### Disable locking for `terraform plan`
 
 In some situation, you want to disabling workspace locking when running `terraform plan`.
 
