@@ -246,7 +246,7 @@ jobs:
 
 ### Manual Terraform Apply
 
-In some situation, you want to control the `terraform apply` yourself.
+In some situations, you want to control the `terraform apply` yourself.
 
 In your `.github/workflows/terraform.yml` file you would have:
 ```yaml
@@ -287,7 +287,8 @@ jobs:
 
 ### Disable locking for `terraform plan`
 
-In some situation, you want to disabling workspace locking when running `terraform plan`.
+In some situations, you want to disabling workspace locking when running `terraform plan`.  
+This would be the equivalent of running `terraform plan -lock=false`: https://www.terraform.io/language/state/locking
 
 In your `.github/workflows/terraform.yml` file you would have:
 ```yaml
