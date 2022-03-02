@@ -284,3 +284,42 @@ jobs:
         run: |
           terraform apply -auto-approve
 ```
+
+### Disable locking for `terraform plan`
+
+In some situation, you want to disabling workspace locking when running `terraform plan`.
+
+In your `.github/workflows/terraform.yml` file you would have:
+```yaml
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.tf'
+      - '.github/workflows/terraform.yml'
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      TF_WORKSPACE: "default"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ~1.0.0
+          cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
+
+      - uses: tchupp/actions-terraform-pr@v1
+        with:
+          apply-branch: "main"
+          lock-for-plan: false
+```
