@@ -77,7 +77,7 @@ runs:
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
-          if terraform plan -no-color -lock=${{ inputs.lock-for-plan }}; then
+          if terraform plan -no-color -lock=${{ inputs.lock-for-plan }} | tail -c 63535; then
             echo "::set-output name=plan-outcome::success"
           else
             echo "::set-output name=plan-outcome::failure"
