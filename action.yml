@@ -24,6 +24,10 @@ inputs:
     description: "Should we use a workspace lock for the `terraform plan`? https://www.terraform.io/language/state/locking"
     required: false
     default: true
+  require-formatting:
+    description: "Should we require the terraform formatting check?"
+    required: false
+    default: false
 runs:
   using: "composite"
   steps:
@@ -161,6 +165,17 @@ runs:
       shell: bash
       run: |
         if [[ '${{ steps.plan.outputs.plan-outcome }}' == 'failure' ]]; then
+          echo ${{ steps.plan.outputs.stdout }}
+          echo ${{ steps.plan.outputs.stderr }}
+          exit 1
+        fi
+
+    - name: Terraform Format Status
+      shell: bash
+      run: |
+        if [[ '${{ inputs.require-formatting }}' == 'true' ]] && [[ '${{ steps.fmt.outputs.plan-outcome }}' == 'failure' ]]; then
+          echo ${{ steps.fmt.outputs.stdout }}
+          echo ${{ steps.fmt.outputs.stderr }}
           exit 1
         fi
 
