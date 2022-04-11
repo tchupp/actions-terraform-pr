@@ -168,7 +168,7 @@ runs:
     - name: Terraform Validate Status
       shell: bash
       run: |
-        if [[ '${{ inputs.require-validate }}' == 'true' ]] && [[ '${{ steps.validate.outputs.plan-outcome }}' == 'failure' ]]; then
+        if [[ '${{ inputs.require-validate }}' == 'true' ]] && [[ '${{ steps.validate.outputs.validate-outcome }}' == 'failure' ]]; then
           echo ${{ steps.validate.outputs.stdout }}
           echo ${{ steps.validate.outputs.stderr }}
           exit 1
@@ -186,7 +186,7 @@ runs:
     - name: Terraform Format Status
       shell: bash
       run: |
-        if [[ '${{ inputs.require-formatting }}' == 'true' ]] && [[ '${{ steps.fmt.outputs.plan-outcome }}' == 'failure' ]]; then
+        if [[ '${{ inputs.require-formatting }}' == 'true' ]] && [[ '${{ steps.fmt.outputs.fmt-outcome }}' == 'failure' ]]; then
           echo ${{ steps.fmt.outputs.stdout }}
           echo ${{ steps.fmt.outputs.stderr }}
           exit 1
