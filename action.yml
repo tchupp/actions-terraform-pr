@@ -28,6 +28,10 @@ inputs:
     description: "Should we require the terraform formatting check?"
     required: false
     default: false
+  require-validate:
+    description: "Should we require the terraform validate check?"
+    required: false
+    default: true
 runs:
   using: "composite"
   steps:
@@ -160,6 +164,15 @@ runs:
               })
             }
           }
+
+    - name: Terraform Validate Status
+      shell: bash
+      run: |
+        if [[ '${{ inputs.require-validate }}' == 'true' ]] && [[ '${{ steps.validate.outputs.plan-outcome }}' == 'failure' ]]; then
+          echo ${{ steps.validate.outputs.stdout }}
+          echo ${{ steps.validate.outputs.stderr }}
+          exit 1
+        fi
 
     - name: Terraform Plan Status
       shell: bash
