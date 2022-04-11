@@ -169,8 +169,8 @@ runs:
       shell: bash
       run: |
         if [[ '${{ inputs.require-validate }}' == 'true' ]] && [[ '${{ steps.validate.outputs.validate-outcome }}' == 'failure' ]]; then
-          echo ${{ steps.validate.outputs.stdout }}
-          echo ${{ steps.validate.outputs.stderr }}
+          echo "${{ steps.validate.outputs.stdout }}"
+          echo "${{ steps.validate.outputs.stderr }}"
           exit 1
         fi
 
@@ -178,48 +178,48 @@ runs:
       shell: bash
       run: |
         if [[ '${{ steps.plan.outputs.plan-outcome }}' == 'failure' ]]; then
-          echo ${{ steps.plan.outputs.stdout }}
-          echo ${{ steps.plan.outputs.stderr }}
+          echo "${{ steps.plan.outputs.stdout }}"
+          echo "${{ steps.plan.outputs.stderr }}"
           exit 1
         fi
 
-#     - name: Terraform Format Status
-#       shell: bash
-#       run: |
-#         if [[ '${{ inputs.require-formatting }}' == 'true' ]] && [[ '${{ steps.fmt.outputs.fmt-outcome }}' == 'failure' ]]; then
-#           echo ${{ steps.fmt.outputs.stdout }}
-#           echo ${{ steps.fmt.outputs.stderr }}
-#           exit 1
-#         fi
-# 
-#     - name: Terraform Apply
-#       shell: bash
-#       run: |
-#         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]
-#         then
-#           echo
-#           echo
-#           echo "********"
-#           echo "Branch is not '${{ inputs.apply-branch }}', 'terraform apply' will not be executed."
-#           echo "********"
-#           echo
-#           exit 0
-#         fi
+    - name: Terraform Format Status
+      shell: bash
+      run: |
+        if [[ '${{ inputs.require-formatting }}' == 'true' ]] && [[ '${{ steps.fmt.outputs.fmt-outcome }}' == 'failure' ]]; then
+          echo "${{ steps.fmt.outputs.stdout }}"
+          echo "${{ steps.fmt.outputs.stderr }}"
+          exit 1
+        fi
 
-#         # Update remote references
-#         git fetch --quiet
+    - name: Terraform Apply
+      shell: bash
+      run: |
+        if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]
+        then
+          echo
+          echo
+          echo "********"
+          echo "Branch is not '${{ inputs.apply-branch }}', 'terraform apply' will not be executed."
+          echo "********"
+          echo
+          exit 0
+        fi
 
-#         if [[ "$(git rev-parse origin/${{ github.ref_name }})" != "$(git rev-parse HEAD)" ]]
-#         then
-#           echo
-#           echo
-#           echo "********"
-#           echo "Branch '${{ inputs.apply-branch }}' is not up to date, 'terraform apply' will not be executed."
-#           echo "Please run only run this action on the latest commit on the '${{ inputs.apply-branch }}' branch."
-#           echo "********"
-#           echo
-#           exit 1
-#         fi
+        # Update remote references
+        git fetch --quiet
 
-#         cd ${{ inputs.path }}
-#         terraform apply -auto-approve
+        if [[ "$(git rev-parse origin/${{ github.ref_name }})" != "$(git rev-parse HEAD)" ]]
+        then
+          echo
+          echo
+          echo "********"
+          echo "Branch '${{ inputs.apply-branch }}' is not up to date, 'terraform apply' will not be executed."
+          echo "Please run only run this action on the latest commit on the '${{ inputs.apply-branch }}' branch."
+          echo "********"
+          echo
+          exit 1
+        fi
+
+        cd ${{ inputs.path }}
+        terraform apply -auto-approve
