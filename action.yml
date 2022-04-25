@@ -169,8 +169,10 @@ runs:
       shell: bash
       run: |
         if [[ '${{ inputs.require-validate }}' == 'true' ]] && [[ '${{ steps.validate.outputs.validate-outcome }}' == 'failure' ]]; then
-          echo '::escapeData::${{ steps.validate.outputs.stdout }}'
-          echo '::escapeData::${{ steps.validate.outputs.stderr }}'
+          cat <<"EOFFFF"
+          ${{ steps.validate.outputs.stdout }}
+          ${{ steps.validate.outputs.stderr }}
+        EOFFFF
           exit 1
         fi
 
@@ -178,8 +180,10 @@ runs:
       shell: bash
       run: |
         if [[ '${{ steps.plan.outputs.plan-outcome }}' == 'failure' ]]; then
-          echo '::escapeData::${{ steps.plan.outputs.stdout }}'
-          echo '::escapeData::${{ steps.plan.outputs.stderr }}'
+          cat <<"EOFFFF"
+          ${{ steps.plan.outputs.stdout }}
+          ${{ steps.plan.outputs.stderr }}
+        EOFFFF
           exit 1
         fi
 
@@ -187,8 +191,10 @@ runs:
       shell: bash
       run: |
         if [[ '${{ inputs.require-formatting }}' == 'true' ]] && [[ '${{ steps.fmt.outputs.fmt-outcome }}' == 'failure' ]]; then
-          echo '::escapeData::${{ steps.fmt.outputs.stdout }}'
-          echo '::escapeData::${{ steps.fmt.outputs.stderr }}'
+          cat <<"EOFFFF"
+          ${{ steps.fmt.outputs.stdout }}
+          ${{ steps.fmt.outputs.stderr }}
+        EOFFFF
           exit 1
         fi
 
