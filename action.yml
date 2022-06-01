@@ -85,7 +85,7 @@ runs:
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
-          if terraform plan -no-color -lock=${{ inputs.lock-for-plan }} | tail -c 63535; then
+          if terraform plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} | tail -c 63535; then
             echo "::set-output name=plan-outcome::success"
           else
             echo "::set-output name=plan-outcome::failure"
@@ -228,4 +228,4 @@ runs:
         fi
 
         cd ${{ inputs.path }}
-        terraform apply -auto-approve
+        terraform apply -lock-timeout=60s -auto-approve
