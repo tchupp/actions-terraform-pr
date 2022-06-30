@@ -85,17 +85,17 @@ runs:
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
-          if terraform plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} | tail -c 63535; then
+          if terraform plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} >${GITHUB_WORKSPACE}/plan.out 2>&1; then
             echo "::set-output name=plan-outcome::success"
           else
             echo "::set-output name=plan-outcome::failure"
           fi
+          cat ${GITHUB_WORKSPACE}/plan.out
         fi
 
     - name: Create/Update Comment
       uses: actions/github-script@v4
       env:
-        PLAN: "terraform\n\n${{ steps.plan.outputs.stdout }}\n${{ steps.plan.outputs.stderr }}"
         TF_WORKSPACE: "${{ steps.workspace.outputs.stdout }}"
         CUSTOM_TITLE: "${{ inputs.pr-comment-title }}"
       with:
@@ -108,6 +108,13 @@ runs:
             .filter(s => !!s)
             .join(" ");
 
+          const run_url = process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID
+          const run_link = '<a href="' + run_url + '">Actions</a>.'
+          const fs = require('fs')
+          const plan_file = fs.readFileSync('plan.out', 'utf8')
+          const plan = plan_file.length > 65000 ? " ..." + plan_file.toString().substring(plan_file.length - 65000, plan_file.length) : plan_file
+          const truncated_message = plan_file.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
+
           const commentTitle = `### Terraform Status ${tag}`;
           const commentContent = `
           ${commentTitle}
@@ -117,9 +124,10 @@ runs:
           <details>
           <summary>Show Plan</summary>
 
-          \`\`\`${process.env.PLAN}\`\`\`
+          \`\`\`${plan}\`\`\`
 
           </details>
+          ${truncated_message}
 
           Pusher: @${{ github.actor }}
           Action: \`${{ github.event_name }}\`
