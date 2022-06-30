@@ -101,6 +101,10 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
+          if (!context || !context.issue || !context.issue.number) {
+            return;
+          }
+
           const tag = [
             process.env.CUSTOM_TITLE,
             process.env.TF_WORKSPACE,
@@ -132,10 +136,6 @@ runs:
           Pusher: @${{ github.actor }}
           Action: \`${{ github.event_name }}\`
           `;
-
-          if (!context || !context.issue || !context.issue.number) {
-            return;
-          }
 
           const comments = await github.issues.listComments({
             issue_number: context.issue.number,
