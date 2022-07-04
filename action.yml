@@ -85,11 +85,12 @@ runs:
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
-          if terraform plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }}; then
+          if $TERRAFORM_CLI_PATH/terraform-bin plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} > ${GITHUB_WORKSPACE}/plan.out 2>&1; then
             echo "::set-output name=plan-outcome::success"
           else
             echo "::set-output name=plan-outcome::failure"
           fi
+          cat ${GITHUB_WORKSPACE}/plan.out
         fi
 
     - name: Create/Update Comment
@@ -113,10 +114,8 @@ runs:
 
           const run_url = process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID
           const run_link = '<a href="' + run_url + '">Actions</a>.'
-          const raw_plan = `
-          ${{ steps.plan.outputs.stdout }}
-          ${{ steps.plan.outputs.stderr }}
-          `
+          const fs = require('fs')
+          const raw_plan = fs.readFileSync('plan.out', 'utf8')
           const plan = raw_plan.length > 65000 ? " ..." + raw_plan.toString().substring(raw_plan.length - 65000, raw_plan.length) : raw_plan
           const truncated_message = raw_plan.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
 
