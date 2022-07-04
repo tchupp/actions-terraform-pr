@@ -129,7 +129,9 @@ runs:
           <details>
           <summary>Show Plan</summary>
 
-          \`\`\`${plan}\`\`\`
+          \`\`\`
+          ${plan}
+          \`\`\`
 
           </details>
           ${truncated_message}
