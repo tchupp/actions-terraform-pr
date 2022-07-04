@@ -113,12 +113,12 @@ runs:
 
           const run_url = process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID
           const run_link = '<a href="' + run_url + '">Actions</a>.'
-          const plan_file = `
+          const raw_plan = `
           ${{ steps.plan.outputs.stdout }}
           ${{ steps.plan.outputs.stderr }}
           `
-          const plan = plan_file.length > 65000 ? " ..." + plan_file.toString().substring(plan_file.length - 65000, plan_file.length) : plan_file
-          const truncated_message = plan_file.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
+          const plan = raw_plan.length > 65000 ? " ..." + raw_plan.toString().substring(raw_plan.length - 65000, raw_plan.length) : raw_plan
+          const truncated_message = raw_plan.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
 
           const commentTitle = `### Terraform Status ${tag}`;
           const commentContent = `
@@ -150,7 +150,7 @@ runs:
              comment.body.includes(commentTitle)
           );
 
-          if (commentContent.includes("No changes.")) {
+          if (raw_plan.includes("No changes.")) {
             if (githubActionsBotComment) {
               await github.issues.deleteComment({
                 comment_id: githubActionsBotComment.id,
