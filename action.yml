@@ -41,9 +41,9 @@ runs:
       run: |
         cd ${{ inputs.path }}
         if terraform fmt -recursive -check; then
-          echo "::set-output name=fmt-outcome::success"
+          echo "fmt-outcome=success" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=fmt-outcome::failure"
+          echo "fmt-outcome=failure" >> $GITHUB_OUTPUT
         fi
 
     - name: Terraform Init
@@ -52,9 +52,9 @@ runs:
       run: |
         cd ${{ inputs.path }}
         if terraform init; then
-          echo "::set-output name=init-outcome::success"
+          echo "init-outcome=success" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=init-outcome::failure"
+          echo "init-outcome=failure" >> $GITHUB_OUTPUT
         fi
 
     - name: Terraform Workspace
@@ -63,9 +63,9 @@ runs:
       run: |
         cd ${{ inputs.path }}
         if terraform workspace show; then
-          echo "::set-output name=workspace-outcome::success"
+          echo "workspace-outcome=success" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=workspace-outcome::failure"
+          echo "workspace-outcome=failure" >> $GITHUB_OUTPUT
         fi
 
     - name: Terraform Validate
@@ -74,9 +74,9 @@ runs:
       run: |
         cd ${{ inputs.path }}
         if terraform validate -no-color; then
-          echo "::set-output name=validate-outcome::success"
+          echo "validate-outcome=success" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=validate-outcome::failure"
+          echo "validate-outcome=failure" >> $GITHUB_OUTPUT
         fi
 
     - name: Terraform Plan
@@ -86,9 +86,9 @@ runs:
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
           if $TERRAFORM_CLI_PATH/terraform-bin plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} > ${GITHUB_WORKSPACE}/plan.out 2>&1; then
-            echo "::set-output name=plan-outcome::success"
+            echo "plan-outcome=success" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=plan-outcome::failure"
+            echo "plan-outcome=failure" >> $GITHUB_OUTPUT
           fi
           cat ${GITHUB_WORKSPACE}/plan.out
         fi
