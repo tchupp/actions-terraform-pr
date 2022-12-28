@@ -94,7 +94,7 @@ runs:
         fi
 
     - name: Create/Update Comment
-      uses: actions/github-script@v4
+      uses: actions/github-script@v6
       env:
         TF_WORKSPACE: "${{ steps.workspace.outputs.stdout }}"
         CUSTOM_TITLE: "${{ inputs.pr-comment-title }}"
@@ -139,7 +139,7 @@ runs:
           Action: \`${{ github.event_name }}\`
           `;
 
-          const comments = await github.issues.listComments({
+          const comments = await github.rest.issues.listComments({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -151,7 +151,7 @@ runs:
 
           if (raw_plan.includes("No changes.")) {
             if (githubActionsBotComment) {
-              await github.issues.deleteComment({
+              await github.rest.issues.deleteComment({
                 comment_id: githubActionsBotComment.id,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -159,14 +159,14 @@ runs:
             }
           } else {
             if (githubActionsBotComment) {
-              await github.issues.updateComment({
+              await github.rest.issues.updateComment({
                 comment_id: githubActionsBotComment.id,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: commentContent,
               })
             } else {
-              await github.issues.createComment({
+              await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
