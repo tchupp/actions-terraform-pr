@@ -28,10 +28,10 @@ The following snippet from an example job, [which can be found below](#simple-se
 ...
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
@@ -125,10 +125,10 @@ jobs:
       TF_WORKSPACE: "default"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
@@ -174,10 +174,10 @@ jobs:
       TF_WORKSPACE: "default"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
@@ -230,10 +230,10 @@ jobs:
       TF_WORKSPACE: "${{ matrix.env }}"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
@@ -269,10 +269,10 @@ jobs:
       TF_WORKSPACE: "default"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
@@ -311,10 +311,10 @@ jobs:
       TF_WORKSPACE: "default"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ~1.0.0
           cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
