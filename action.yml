@@ -40,7 +40,7 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        if terraform fmt -recursive -check; then
+        if terraform fmt -input=false -recursive -check; then
           echo "fmt-outcome=success" >> $GITHUB_OUTPUT
         else
           echo "fmt-outcome=failure" >> $GITHUB_OUTPUT
@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        if terraform init; then
+        if terraform init -input=false; then
           echo "init-outcome=success" >> $GITHUB_OUTPUT
         else
           echo "init-outcome=failure" >> $GITHUB_OUTPUT
@@ -62,7 +62,7 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        if terraform workspace show; then
+        if terraform workspace -input=false show; then
           echo "workspace-outcome=success" >> $GITHUB_OUTPUT
         else
           echo "workspace-outcome=failure" >> $GITHUB_OUTPUT
@@ -73,7 +73,7 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.path }}
-        if terraform validate -no-color; then
+        if terraform validate -input=false -no-color; then
           echo "validate-outcome=success" >> $GITHUB_OUTPUT
         else
           echo "validate-outcome=failure" >> $GITHUB_OUTPUT
@@ -85,7 +85,7 @@ runs:
       run: |
         if [[ '${{ github.ref }}' != 'refs/heads/${{ inputs.apply-branch }}' ]]; then
           cd ${{ inputs.path }}
-          if $TERRAFORM_CLI_PATH/terraform-bin plan -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} > ${GITHUB_WORKSPACE}/plan.out 2>&1; then
+          if $TERRAFORM_CLI_PATH/terraform-bin plan -input=false -no-color -lock-timeout=60s -lock=${{ inputs.lock-for-plan }} > ${GITHUB_WORKSPACE}/plan.out 2>&1; then
             echo "plan-outcome=success" >> $GITHUB_OUTPUT
           else
             echo "plan-outcome=failure" >> $GITHUB_OUTPUT
@@ -238,4 +238,4 @@ runs:
         fi
 
         cd ${{ inputs.path }}
-        terraform apply -lock-timeout=60s -auto-approve
+        terraform apply -input=false -lock-timeout=60s -auto-approve
