@@ -94,7 +94,7 @@ runs:
         fi
 
     - name: Create/Update Comment
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         TF_WORKSPACE: "${{ steps.workspace.outputs.stdout }}"
         CUSTOM_TITLE: "${{ inputs.pr-comment-title }}"
